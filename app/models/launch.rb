@@ -4,7 +4,7 @@ class Launch
     @@launches = []
 
     def initialize(params={})
-        return if params == {}
+        return if params.empty?
         @docker_file_url = raw_url params['docker_file_url']
         @program_name = @docker_file_url.split('/')[4]
         @id = @@launches.count+1
