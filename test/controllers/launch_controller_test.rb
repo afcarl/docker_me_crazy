@@ -2,8 +2,9 @@ require 'test_helper'
 
 class LaunchControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @docker_file_url = 'https://github.com/dmitrinesterenko/blog/blob/master/Dockerfile-production'
-    @subject = Launch.new(@docker_file_url)
+    @params = {'docker_file_url' =>
+'https://github.com/docker-library/hello-world/blob/bdee60d7ff6b98037657dc34a10e9ca4ffd6785f/hello-world/Dockerfile'}
+    @subject = Launch.new(@params)
   end
 
   test "should get index" do
@@ -18,7 +19,7 @@ class LaunchControllerTest < ActionDispatch::IntegrationTest
 
   test "should create launch" do
     assert_difference('Launch.count') do
-      post launch_create_url, params: { launch: @docker_file_url }
+      post launch_create_url, params: { launch: @params }
     end
     #assert_redirected_to launch_url([:launch => Launch.last])
   end

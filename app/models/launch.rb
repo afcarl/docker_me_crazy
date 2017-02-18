@@ -3,8 +3,9 @@ class Launch
     attr :docker_file_url, :program_name, :id
     @@launches = []
 
-    def initialize(docker_file_url='')
-        @docker_file_url = raw_url docker_file_url
+    def initialize(params={})
+        return if params == {}
+        @docker_file_url = raw_url params['docker_file_url']
         @program_name = @docker_file_url.split('/')[4]
         @id = @@launches.count+1
     end
