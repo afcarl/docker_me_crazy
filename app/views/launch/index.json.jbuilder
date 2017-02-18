@@ -1,0 +1,1 @@
+json.array! @launch, partial: 'launch/launch', as: :launch
