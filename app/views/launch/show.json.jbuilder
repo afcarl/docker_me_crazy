@@ -1,0 +1,1 @@
+json.partial! "launch/launch", launch: @launch

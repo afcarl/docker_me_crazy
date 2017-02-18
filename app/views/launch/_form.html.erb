@@ -1,0 +1,18 @@
+<%= form_for launch, url: {action: 'create'}  do |f| %>
+  <% if launch.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(launch.errors.count, "error") %> prohibited this launch from being saved:</h2>
+
+      <ul>
+      <% launch.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.text_field :docker_file_url %>
+    <%= f.submit %>
+  </div>
+<% end %>
