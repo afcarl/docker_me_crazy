@@ -5,9 +5,10 @@ class Launch
 
     def initialize(params={})
         return if params.empty?
-        @docker_file_url = raw_url params['docker_file_url']
-        @program_name = @docker_file_url.split('/')[4]
-        @id = @@launches.count+1
+        @docker_file_url = params['docker_file_url']
+        @program_name = application_name
+        @dockerfile_path = dockerfile_path
+        @id = SecureRandom.uuid
     end
 
     def id
@@ -22,44 +23,63 @@ class Launch
         true
     end
 
-    def write
-        File.open(path, 'w') do |f|
-            f.write(contents)
-        end
-    end
-
-    def contents
-        Faraday.get(@docker_file_url).body
-    end
-
     def build
-        cmd = "docker build -t #{self.program_name} -f #{self.path} ."
-        debug "build #{cmd}"
+        cmds = "cd #{self.application_local_path} && docker build --no-cache -t #{self.program_name}:#{id} -f #{self.dockerfile_path} ."
+        debug "build #{cmds}"
+        Kernel.system(cmds)
+    end
+
+    def run
+        cmd = "docker run -p 3002:3000 #{self.program_name}:#{id}"
+        debug "run #{cmd}"
         Kernel.system(cmd)
     end
 
+    # private
     def raw_url(url)
         url = url.gsub('github.com', 'raw.githubusercontent.com')
         url.gsub('blob/', '')
     end
 
-    def run
-        cmd = "docker run #{self.program_name}"
-        debug "run #{cmd}"
-        Kernel.system(cmd)
+    def application_remote_path
+        urls = @docker_file_url.split('/')
+        urls[0..4].join('/')
+    end
+
+    def application_local_path
+        "./launches/#{application_name}"
+    end
+
+    def application_files
+        Dir.entries(application_local_path)
+    end
+
+    def application_name
+        @docker_file_url.split('/')[4]
+    end
+
+    def dockerfile_path
+        "Dockerfile-rails"
+    end
+
+    def simple_path
+        self.docker_file_url.gsub('/', '_').gsub(':', '-')
     end
 
     def debug(message)
         Rails::logger.debug(message)
     end
 
-    def path
-        "./dockers/#{simple_path}"
+    def write
+        cmd = "git clone #{self.application_remote_path} #{self.application_local_path}"
+        debug "write #{cmd}"
+        Kernel.system(cmd)
     end
 
-    def simple_path
-        self.docker_file_url.gsub('/', '_').gsub(':', '-')
+    def contents
+        Faraday.get(@docker_file_url).body
     end
+
 
     #self
 

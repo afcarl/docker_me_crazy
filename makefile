@@ -1,2 +1,2 @@
 install:
-	mkdir ./dockers
+	mkdir ./launches
