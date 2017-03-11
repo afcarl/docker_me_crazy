@@ -1,0 +1,21 @@
+.actions {
+    width: 50%;
+    margin-left : 30%;  /* center% - (width%/2) = 100/2 - 40/2 = 50 - 20 = 30 */
+    height: 40%; /* center% - (height%/2) = 100/2 - 40/2 = 30 */
+    margin-top : 5%;
+}
+
+.shipit {
+    margin-bottom: 5%;
+}
+
+.actions input[type="text"]{
+    font-size: 12pt;
+    width: 250pt;
+    height: 36px;
+}
+
+.actions input[type="submit"]{
+    font-size: 24pt;
+    vertical-align: bottom;
+}

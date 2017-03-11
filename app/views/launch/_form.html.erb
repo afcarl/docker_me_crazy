@@ -10,9 +10,11 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="actions">
-    <%= f.text_field :docker_file_url %>
-    <%= f.submit %>
+  <div class="shipit">
+     <%= image_tag "sailboat_4.jpg" %>
+     <% #{Random.rand(4)+1}.
+     %>
   </div>
+  <%= f.text_field :docker_file_url %>
+  <%= f.submit("Launch") %>
 <% end %>
