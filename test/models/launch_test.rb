@@ -18,4 +18,13 @@ class LaunchTest < ActiveSupport::TestCase
         assert_equal(@launch.application_local_path, './launches/how-we-deploy')
         assert_equal(@launch.application_files.count, 29)
     end
+
+    test 'save runs the necessary steps' do
+        mock = MiniTest::Mock.new
+        mock.expect(:write, nil, [])
+        mock.expect(:build, nil, [])
+        mock.expect(:run, nil, [])
+        @launch.save
+        mock.verify
+    end
 end

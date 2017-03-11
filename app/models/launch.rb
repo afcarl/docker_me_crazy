@@ -2,7 +2,9 @@ class Launch
     include ActiveModel::Model
     attr :docker_file_url, :program_name, :id
     @@launches = []
-
+    # TODO: refactor this so that a launch runner is provided separately
+    # which will have all of the .write .build .switch and .run functions
+    # to allow us to switch between test and production mode
     def initialize(params={})
         return if params.empty?
         @docker_file_url = params['docker_file_url']
@@ -18,22 +20,36 @@ class Launch
     def save
         write
         build
+        switch
         run
         @@launches << self
         true
     end
 
+    def write
+        cmd = "git clone #{self.application_remote_path} #{self.application_local_path}"
+        debug "write #{cmd}"
+        Kernel.system(cmd)
+    end
+
     def build
-        cmds = "cd #{self.application_local_path} && docker build --no-cache -t #{self.program_name}:#{id} -f #{self.dockerfile_path} ."
-        debug "build #{cmds}"
-        Kernel.system(cmds)
+        cmd = "cd #{self.application_local_path} && #{switch} &&  docker build --no-cache -t #{self.program_name}:#{id} -f #{self.dockerfile_path} ."
+        debug "build #{cmd}"
+        Kernel.system(cmd)
+    end
+
+    def switch
+        "eval $(docker-machine env aws07)"
     end
 
     def run
-        cmd = "docker run -p 3002:3000 #{self.program_name}:#{id}"
+        #TODO: oh what the heck. But also clean this up to have better port assignment
+        port = 3000 + Random.rand(1000)
+        cmd = "#{switch} && docker run -p #{port}:3000 #{self.program_name}:#{id}"
         debug "run #{cmd}"
         Kernel.system(cmd)
     end
+
 
     # private
     def raw_url(url)
@@ -68,12 +84,6 @@ class Launch
 
     def debug(message)
         Rails::logger.debug(message)
-    end
-
-    def write
-        cmd = "git clone #{self.application_remote_path} #{self.application_local_path}"
-        debug "write #{cmd}"
-        Kernel.system(cmd)
     end
 
     def contents
