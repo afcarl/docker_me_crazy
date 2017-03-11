@@ -1,7 +1,7 @@
 # Docker Me Crazy
 
-![alt text](https://github.com/dmitrinesterenko/docker-me-crazy/raw/master/src/documenation/images/docker-me-crazy-home-screen.png
-"It's just that simple to launch a docker container")
+![alt
+text](https://github.com/dmitrinesterenko/docker_me_crazy/blob/master/documentation/images/docker-me-crazy-home-screen.png "It's just that simple to launch a docker container")
 
 
 Deploy your docker application by providing a dockerfile url.
